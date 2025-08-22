@@ -7,72 +7,70 @@
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<header>
-  <h1>Cute Services - Owner Portal</h1>
-  <nav>
-    <a href="/cute-services-owner/">Home</a>
-    <a href="/cute-services-staff/">Staff Portal</a>
-    <a href="/cute-services-reseller/">Reseller Portal</a>
-  </nav>
-</header>
-<main>
-  <h2>Owner Dashboard</h2>
-  <div id="metrics">
-    <div class="metric">
-      <h3>Total Revenue (USD)</h3>
-      <p id="metricRevenue">$0</p>
+  <header>
+    <h1>Cute Services - Owner Portal</h1>
+    <nav>
+      <a href="/cute-services-owner/">Home</a>
+      <a href="/cute-services-staff/">Staff Portal</a>
+      <a href="/cute-services-reseller/">Reseller Portal</a>
+    </nav>
+  </header>
+  <main>
+    <h2>Owner Dashboard</h2>
+    <div id="metrics">
+      <div class="metric">
+        <h3>Total Revenue (USD)</h3>
+        <p id="metricRevenue">$0.00</p>
+      </div>
+      <div class="metric">
+        <h3>Total Orders</h3>
+        <p id="metricOrders">0</p>
+      </div>
+      <div class="metric">
+        <h3>Completed Orders</h3>
+        <p id="metricCompleted">0</p>
+      </div>
     </div>
-    <div class="metric">
-      <h3>Total Orders</h3>
-      <p id="metricOrders">0</p>
-    </div>
-    <div class="metric">
-      <h3>Completed Orders</h3>
-      <p id="metricCompleted">0</p>
-    </div>
-  </div>
-  <h3>All Orders</h3>
-  <table id="ordersTable">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Category</th>
-        <th>Value</th>
-        <th>Reseller</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-</main>
-<script>
-  function loadOrders() {
-    const orders = JSON.parse(localStorage.getItem('cuteServicesOrders') || '[]');
-    const tableBody = document.querySelector('#ordersTable tbody');
-    tableBody.innerHTML = '';
-    let totalRevenue = 0;
-    let completed = 0;
-    orders.forEach(order => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${order.id}</td>
-        <td>${order.category}</td>
-        <td>$${order.value.toFixed(2)}</td>
-        <td>${order.reseller}</td>
-        <td class="order-status-${order.status}">${order.status}</td>
-      `;
-      tableBody.appendChild(tr);
-      if (order.status === 'completed') {
-        completed++;
-        totalRevenue += order.value;
-      }
-    });
-    document.getElementById('metricRevenue').textContent = '$' + totalRevenue.toFixed(2);
-    document.getElementById('metricOrders').textContent = orders.length;
-    document.getElementById('metricCompleted').textContent = completed;
-  }
-  loadOrders();
-</script>
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Category</th>
+          <th>Value</th>
+          <th>Reseller</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+  <script>
+    function loadOrders() {
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const tableBody = document.querySelector('#ordersTable tbody');
+      tableBody.innerHTML = '';
+      let totalRevenue = 0;
+      let completed = 0;
+      orders.forEach(order => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${order.order_id}</td>
+          <td>${order.category || ''}</td>
+          <td>$${(order.value || 0).toFixed(2)}</td>
+          <td>${order.reseller || ''}</td>
+          <td class="order-status-${order.status}">${order.status}</td>
+        `;
+        tableBody.appendChild(tr);
+        if (order.status === 'Completed') {
+          completed++;
+          totalRevenue += Number(order.value) || 0;
+        }
+      });
+   ddocument.getElementById('metricRevenue').textContent = totalRevenue.toFixed(2);
+      document.getElementById('metricOrders').textContent = orders.length;
+      document.getElementById('metricCompleted').textContent = completed;
+    }
+    loadOrders();
+  </script>
 </body>
 </html>
