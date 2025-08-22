@@ -2,24 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Owner Portal - Cute Services</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cute Services - Owner Portal</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <header>
-    <h1>Owner Portal</h1>
-    <nav>
-      <a href="index.html">Home</a>
-    </nav>
-  </header>
-  <main>
-    <h2>Owner Dashboard Preview</h2>
-    <p>This page would show high-level metrics (revenue, costs, profit), settings for rates, categories, and per-reseller pricing.</p>
-    <p>It’s a static snapshot to illustrate the design only.</p>
-  </main>
-  <footer>
-    <p>&copy; 2025 Cute Services</p>
-  </footer>
+<header>
+  <h1>Cute Services - Owner Portal</h1>
+  <nav>
+    <a href="/cute-services-owner/">Home</a>
+    <a href="/cute-services-staff/">Staff Portal</a>
+    <a href="/cute-services-reseller/">Reseller Portal</a>
+  </nav>
+</header>
+<main>
+  <h2>Owner Dashboard</h2>
+  <div id="metrics">
+    <div class="metric">
+      <h3>Total Revenue (USD)</h3>
+      <p id="metricRevenue">$0</p>
+    </div>
+    <div class="metric">
+      <h3>Total Orders</h3>
+      <p id="metricOrders">0</p>
+    </div>
+    <div class="metric">
+      <h3>Completed Orders</h3>
+      <p id="metricCompleted">0</p>
+    </div>
+  </div>
+  <h3>All Orders</h3>
+  <table id="ordersTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Category</th>
+        <th>Value</th>
+        <th>Reseller</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</main>
+<script>
+  function loadOrders() {
+    const orders = JSON.parse(localStorage.getItem('cuteServicesOrders') || '[]');
+    const tableBody = document.querySelector('#ordersTable tbody');
+    tableBody.innerHTML = '';
+    let totalRevenue = 0;
+    let completed = 0;
+    orders.forEach(order => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${order.id}</td>
+        <td>${order.category}</td>
+        <td>$${order.value.toFixed(2)}</td>
+        <td>${order.reseller}</td>
+        <td class="order-status-${order.status}">${order.status}</td>
+      `;
+      tableBody.appendChild(tr);
+      if (order.status === 'completed') {
+        completed++;
+        totalRevenue += order.value;
+      }
+    });
+    document.getElementById('metricRevenue').textContent = '$' + totalRevenue.toFixed(2);
+    document.getElementById('metricOrders').textContent = orders.length;
+    document.getElementById('metricCompleted').textContent = completed;
+  }
+  loadOrders();
+</script>
 </body>
 </html>
